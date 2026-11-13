@@ -185,10 +185,14 @@ label.f textarea{min-height:64px;resize:vertical}
   .stat:nth-child(n+4){border-top:1px solid var(--line)}
   .dhead h2{font-size:26px}
 }
+.viewer .bar,.viewer .list,.viewer .back,.viewer [data-act=qr]{display:none!important}
+.viewer .main{grid-template-columns:minmax(0,1fr)!important;padding-top:16px}
+.viewer .main:not(.has-sel) .detail{display:block!important}
+.vnote{margin:16px 0 0;background:var(--accent-soft);border-radius:var(--r);padding:10px 14px;font-size:13px}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
 <div id="app"></div>
-<script type="application/json" id="state">{"example":true,"pallets":[{"code":"SK2611-01","ship":"SKV-2611","dest":"Hồ Chí Minh, VN","size":"1100×1100","gross":486,"height":1520,"status":"ready","note":"맨 위에 잔량 박스 1개(15개)","item":{"n":"히알루론 수분 토너 200ml","s":"8800000000101","u":40,"l":"T2610A","e":"2029-09","r":15},"total":132,"per":24},{"code":"SK2611-02","ship":"SKV-2611","dest":"Hồ Chí Minh, VN","size":"1100×1100","gross":452,"height":1310,"status":"ready","note":"","item":{"n":"데일리 선크림 SPF50+ 50ml","s":"8800000000106","u":60,"l":"S2610A","e":"2029-04"},"total":180,"per":36},{"code":"SK2611-03","ship":"SKV-2611","dest":"","size":"1200×1000","gross":238,"height":980,"status":"packing","note":"20박스 추가 입고 대기","item":{"n":"약산성 클렌징폼 150ml","s":"8800000000102","u":48,"l":"F2609C","e":"2029-08"},"total":100,"per":20},{"code":"SK2611-04","ship":"SKV-2611","dest":"Hà Nội, VN","size":"1100×1100","gross":310,"height":1050,"status":"packing","note":"혼적 팔레트 예시","mode":"mixed","layers":[[{"n":"시카 진정 크림 50ml","s":"8800000000103","c":4,"u":100,"l":"C2610B","e":"2029-10"}],[{"n":"시카 진정 크림 50ml","s":"8800000000103","c":4,"u":100,"l":"C2610B","e":"2029-10"}],[{"n":"수분 시트마스크 10매","s":"8800000000105","c":4,"u":100,"l":"M2608D","e":"2028-08"}]]}]}</script>
+<script type="application/json" id="state">{"example":false,"pallets":[]}</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script id="appjs">
 (function(){
@@ -197,6 +201,7 @@ var ARTIFACT_URL = "https://claude.ai/artifact/7rPc5t3bfqGqw7kyHfNBF5";
 var TITLE = "승광 팔레트 적재표";
 var FONT_HREF = "https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Noto+Sans+KR:wght@400;500;700&display=swap";
 var QR_SRC = "https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js";
+var VIEWER_URL = "https://whisis2013.github.io/pallet/";
 
 var T = {
  ko:{brand:"주식회사 승광인터내셔널 · 베트남 수출",title:"팔레트 적재표",search:"제품명, 바코드, LOT, 팔레트 번호로 검색",all:"전체 선적",newP:"새 팔레트",paste:"엑셀 붙여넣기",csv:"패킹리스트 저장",
@@ -217,7 +222,7 @@ var T = {
   pasteT:"엑셀에서 붙여넣기",pasteHelp:"엑셀에서 아래 순서대로 열을 만들고, 범위를 복사해 붙여넣으세요. 한 줄이 팔레트 하나입니다. 층은 총 박스 수와 층당 박스 수로 자동 계산됩니다. 잔량 박스가 없으면 마지막 칸은 비워 두세요. 같은 번호가 이미 있으면 새 내용으로 바뀝니다.",
   cols:["팔레트번호","선적번호","도착지","제품명","바코드","총박스수","층당박스수","박스당수량","LOT","유통기한","잔량수량"],
   parsed:function(p,r){return "팔레트 "+p+"개를 읽었습니다.";},importBtn:"가져오기",nothing:"읽을 수 있는 줄이 없습니다. 열 순서를 확인하세요.",
-  qrSave:"이미지 저장",qrHelp:"휴대폰 카메라로 찍으면 앱이나 인터넷 없이 아래 내용이 바로 보입니다. 내용이 바뀌면 라벨을 다시 저장해 인쇄하세요.",qrText:"QR에 담기는 내용",qrNoUrl:"QR 링크가 아직 설정되지 않았습니다.",
+  qrSave:"이미지 저장",qrHelp:"휴대폰 카메라로 찍으면 브라우저에서 이 팔레트의 적재 화면이 열립니다. 로그인은 필요 없습니다. 적재 내용이 바뀌면 라벨을 다시 저장해 인쇄하세요.",qrPreview:"찍었을 때 열리는 화면 미리보기",qrNoUrl:"QR 링크가 아직 설정되지 않았습니다.",
   dlFail:"파일을 저장하지 못했습니다.",close:"닫기",examples:"예시",readonly:"보기 전용"},
  vi:{brand:"Seungkwang International · Xuất khẩu Việt Nam",title:"Bảng xếp pallet",search:"Tìm theo tên sản phẩm, mã vạch, LOT, số pallet",all:"Tất cả lô hàng",newP:"Pallet mới",paste:"Dán từ Excel",csv:"Lưu packing list",
   exNote:"Các pallet đang hiển thị là dữ liệu mẫu.",exClear:"Xóa dữ liệu mẫu",
@@ -237,7 +242,7 @@ var T = {
   pasteT:"Dán từ Excel",pasteHelp:"Tạo các cột theo thứ tự dưới đây trong Excel, sao chép và dán vào. Mỗi dòng là một pallet; số tầng được tính tự động.",
   cols:["Số pallet","Số lô hàng","Nơi đến","Tên sản phẩm","Mã vạch","Tổng thùng","Thùng/tầng","SL/thùng","LOT","Hạn dùng","SL thùng lẻ"],
   parsed:function(p,r){return "Đã đọc "+p+" pallet.";},importBtn:"Nhập",nothing:"Không có dòng hợp lệ. Kiểm tra thứ tự cột.",
-  qrSave:"Lưu ảnh",qrHelp:"Quét bằng camera điện thoại để xem ngay nội dung bên dưới, không cần ứng dụng hay Internet. Khi nội dung thay đổi, hãy in lại nhãn.",qrText:"Nội dung trong mã QR",qrNoUrl:"Chưa thiết lập liên kết QR.",
+  qrSave:"Lưu ảnh",qrHelp:"Quét bằng camera điện thoại để mở màn hình xếp hàng của pallet này trên trình duyệt, không cần đăng nhập. Khi nội dung thay đổi, hãy in lại nhãn.",qrPreview:"Xem trước màn hình khi quét",qrNoUrl:"Chưa thiết lập liên kết QR.",
   dlFail:"Không lưu được tệp.",close:"Đóng",examples:"Mẫu",readonly:"Chỉ xem"}
 };
 
@@ -344,6 +349,7 @@ function render(){
   }
   h += '</div>';
 
+  if(VIEW.p) h += '<div class="vnote">'+esc(ui.lang==="vi"?("Nội dung theo nhãn QR in ngày "+(VIEW.d||"—")+". Liên hệ Seungkwang International nếu cần thông tin mới nhất."):("QR 라벨 출력일("+(VIEW.d||"—")+") 기준 내용입니다. 최신 내용은 승광인터내셔널에 문의하세요."))+'</div>';
   if(state.example && state.pallets.length){
     h += '<div class="notice"><p>'+esc(L.exNote)+'</p>'+(cap.canEdit?'<button type="button" class="btn" data-act="clearEx">'+esc(L.exClear)+'</button>':'')+'</div>';
   }
@@ -370,7 +376,7 @@ function render(){
 
   h += '<section class="detail" aria-live="polite">';
   if(sel) h += detail(sel,q);
-  else h += '<div class="empty" style="border:0">'+esc(state.pallets.length?L.pick:L.emptyList)+'</div>';
+  else h += '<div class="empty" style="border:0">'+esc(VIEW.err?(ui.lang==="vi"?"Không đọc được mã QR. Hãy quét lại.":"QR 내용을 읽을 수 없습니다. 다시 찍어 주세요."):(ui.lang==="vi"?"Quét nhãn QR trên pallet để xem nội dung.":"팔레트에 붙은 QR 라벨을 휴대폰 카메라로 찍으면 적재 내용이 이 화면에 표시됩니다."))+'</div>';
   h += '</section></div></div>';
 
   if(ui.modal==="edit") h += editSheet();
@@ -585,7 +591,7 @@ function qrSheet(p){
   var L=t(); if(!p) return "";
   var h='<div class="sheet-bg" data-act="bg"><div class="sheet narrow" role="dialog" aria-modal="true" aria-labelledby="qr-h"><header><h2 id="qr-h">'+esc(L.qr)+' · <span class="code">'+esc(p.code)+'</span></h2><button type="button" class="x" data-act="close" aria-label="'+esc(L.close)+'">'+icon("x")+'</button></header><div class="body">';
   h+='<div class="qrwrap"><img id="qrimg" alt="QR '+esc(p.code)+'"></div>';
-  h+='<p class="hint">'+esc(L.qrHelp)+'</p><div><div class="hint" style="margin-bottom:4px;font-weight:600">'+esc(L.qrText)+'</div><pre class="qrtext">'+esc(qrPayload(p))+'</pre></div>';
+  h+='<p class="hint">'+esc(L.qrHelp)+'</p><a class="btn" href="'+esc(viewerLink(p))+'" target="_blank" rel="noopener" style="align-self:flex-start">'+icon("qr")+esc(L.qrPreview)+'</a>';
   h+='</div><footer><span></span><span class="grow"><button type="button" class="btn" data-act="close">'+esc(L.close)+'</button>'+(cap.dl?'<button type="button" class="btn primary" data-act="qrSave">'+icon("dl")+esc(L.qrSave)+'</button>':'')+'</span></footer></div></div>';
   return h;
 }
@@ -615,8 +621,25 @@ function qrPayload(p){
   out.push("출력일: "+today());
   return out.join("\n");
 }
+function b64u(str){ var b=new TextEncoder().encode(str), bin=""; for(var i=0;i<b.length;i++) bin+=String.fromCharCode(b[i]); return btoa(bin).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+function unb64u(s){ s=s.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; var bin=atob(s), b=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) b[i]=bin.charCodeAt(i); return new TextDecoder().decode(b); }
+function packPallet(p){
+  var o={}; ["code","ship","dest","size","gross","height","status","note","mode","total","per"].forEach(function(k){ if(p[k]!=null && p[k]!=="") o[k]=p[k]; });
+  function clean(it){ var r={}; ["n","s","c","u","l","e","r"].forEach(function(k){ if(it[k]!=null && it[k]!=="") r[k]=it[k]; }); return r; }
+  if(isSingle(p)) o.item=clean(p.item);
+  else { var ls=(p.layers||[]).map(function(Ly){ return Ly.map(clean); }), lr=[];
+    ls.forEach(function(Ly){ var k=JSON.stringify(Ly), last=lr[lr.length-1]; if(last && last.k===k) last.x++; else lr.push({k:k,x:1,L:Ly}); });
+    o.lr=lr.map(function(r){ return [r.x,r.L]; }); }
+  o.d=today();
+  return o;
+}
+function unpackPallet(o){
+  if(o.lr){ var ls=[]; o.lr.forEach(function(r){ for(var i=0;i<r[0];i++) ls.push(JSON.parse(JSON.stringify(r[1]))); }); o.layers=ls; delete o.lr; }
+  return o;
+}
+function viewerLink(p){ return VIEWER_URL+"#v1."+b64u(JSON.stringify(packPallet(p))); }
 function labelCanvas(p){
-  var link = qrPayload(p);
+  var link = viewerLink(p);
   var cv=document.createElement("canvas"), W=800, H=1000; cv.width=W; cv.height=H;
   var g=cv.getContext("2d");
   g.fillStyle="#fff"; g.fillRect(0,0,W,H);
@@ -631,13 +654,13 @@ function labelCanvas(p){
   fitText(g,tt.l+" layers / tầng · "+tt.c+" ctn"+(tt.r?" (+1 loose: "+tt.r+" pcs)":"")+" · "+tt.u+" pcs"+(p.gross?" · "+p.gross+" kg":""),56,yy,W-112);
   if(typeof qrcode==="function"){
     qrcode.stringToBytes=function(str){ var b=new TextEncoder().encode(str), a=[]; for(var i=0;i<b.length;i++) a.push(b[i]); return a; };
-    var qr=qrcode(0,link.length>180?"L":"M"); qr.addData(link,"Byte"); qr.make();
+    var qr=qrcode(0,link.length>700?"L":"M"); qr.addData(link,"Byte"); qr.make();
     var size=900-(yy+30), m=qr.getModuleCount(), cell=Math.floor(size/(m+6)), q0=(W-cell*m)/2, y0=yy+30+(size-cell*m)/2;
     for(var r=0;r<m;r++) for(var c=0;c<m;c++){ if(qr.isDark(r,c)) g.fillRect(q0+c*cell,y0+r*cell,cell,cell); }
   } else {
     g.font="500 28px sans-serif"; g.fillText("QR library not loaded",56,600);
   }
-  g.font="500 22px 'IBM Plex Mono',monospace"; g.fillStyle="#58656F"; fitText(g,"Scan to view contents · Quét để xem chi tiết · 출력 "+today(),56,940,W-112);
+  g.font="500 22px 'IBM Plex Mono',monospace"; g.fillStyle="#58656F"; fitText(g,"Scan to view pallet · Quét để xem pallet · 출력 "+today(),56,940,W-112);
   return cv;
 }
 function fitText(g,s,x,y,max){ var w=g.measureText(s).width; if(w>max){ g.save(); g.translate(x,y); g.scale(max/w,1); g.fillText(s,0,0); g.restore(); } else g.fillText(s,x,y); }
@@ -812,7 +835,19 @@ function exportCSV(){
 }
 
 /* ---------- routing ---------- */
-function route(){
+var VIEW={p:null,err:false,d:""};
+function readHash(){
+  var h=location.hash||"";
+  VIEW={p:null,err:false,d:""};
+  if(h.indexOf("#v1.")===0){
+    try{ var o=JSON.parse(unb64u(h.slice(4))); if(!o||!o.code) throw 0; VIEW.d=o.d||""; delete o.d; VIEW.p=unpackPallet(o); }
+    catch(e){ VIEW.err=true; }
+  }
+  state={example:false,pallets:VIEW.p?[VIEW.p]:[]};
+  ui.sel=VIEW.p?VIEW.p.code:null;
+}
+function route(){ readHash(); render(); }
+function routeOld(){
   var h=decodeURIComponent((location.hash||"").replace(/^#/,""));
   var p=h?findBySlug(h):null;
   ui.sel=p?p.code:null;
@@ -822,17 +857,12 @@ function route(){
 window.addEventListener("hashchange",route);
 route();
 
-/* ---------- standalone (GitHub Pages) ---------- */
-var STANDALONE = !(window.claude && typeof window.claude.use==="function");
-if(STANDALONE){
-  cap.dl = { save:function(req){ try{ var b=req.data instanceof Blob?req.data:new Blob([req.data]); var u=URL.createObjectURL(b); var a=document.createElement("a"); a.href=u; a.download=req.filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(u); },2000); return Promise.resolve({status:"saved"}); }catch(e){ return Promise.reject({code:"unavailable"}); } } };
-  T.ko.exNote = "이 페이지는 2026-11-13 기준 보기 전용 사본입니다. 입력·수정은 Claude의 팔레트 적재표에서 하세요.";
-  T.vi.exNote = "Đây là bản sao chỉ xem (ngày 2026-11-13). Hãy nhập và sửa dữ liệu trên trang gốc.";
-  state.example = true;
-  render();
-}
+/* ---------- standalone viewer ---------- */
+document.body.classList.add("viewer");
+cap.dl = { save:function(req){ try{ var b=req.data instanceof Blob?req.data:new Blob([req.data]); var u=URL.createObjectURL(b); var a=document.createElement("a"); a.href=u; a.download=req.filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(u); },2000); return Promise.resolve({status:"saved"}); }catch(e){ return Promise.reject({code:"unavailable"}); } } };
+render();
 /* ---------- capabilities ---------- */
-if(window.claude && typeof window.claude.use==="function"){
+if(false){
   window.claude.use("artifact").then(function(a){
     cap.art=a;
     if(!a){ return; }
