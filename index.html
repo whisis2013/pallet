@@ -169,6 +169,7 @@ label.f textarea{min-height:64px;resize:vertical}
 .colspec{display:flex;flex-wrap:wrap;gap:4px}
 .colspec span{font-size:12px;background:var(--sunk);border:1px solid var(--line);border-radius:4px;padding:2px 7px}
 .qrwrap{display:flex;justify-content:center;background:var(--sunk);border-radius:var(--r);padding:14px}
+.qrtext{margin:0;background:var(--sunk);border:1px solid var(--line);border-radius:5px;padding:10px 12px;font-family:var(--f-body);font-size:12.5px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;max-height:240px;overflow-y:auto}
 .qrwrap img{max-width:100%;width:340px;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.18)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--panel);padding:10px 16px;border-radius:8px;font-size:13.5px;z-index:80;max-width:calc(100% - 32px);box-shadow:0 4px 18px rgba(0,0,0,.25)}
 
@@ -216,7 +217,7 @@ var T = {
   pasteT:"엑셀에서 붙여넣기",pasteHelp:"엑셀에서 아래 순서대로 열을 만들고, 범위를 복사해 붙여넣으세요. 한 줄이 팔레트 하나입니다. 층은 총 박스 수와 층당 박스 수로 자동 계산됩니다. 잔량 박스가 없으면 마지막 칸은 비워 두세요. 같은 번호가 이미 있으면 새 내용으로 바뀝니다.",
   cols:["팔레트번호","선적번호","도착지","제품명","바코드","총박스수","층당박스수","박스당수량","LOT","유통기한","잔량수량"],
   parsed:function(p,r){return "팔레트 "+p+"개를 읽었습니다.";},importBtn:"가져오기",nothing:"읽을 수 있는 줄이 없습니다. 열 순서를 확인하세요.",
-  qrSave:"이미지 저장",qrHelp:"휴대폰 카메라로 찍으면 이 팔레트 내역이 바로 열립니다. 이미지를 저장해 라벨지에 인쇄하세요.",qrNoUrl:"QR 링크가 아직 설정되지 않았습니다.",
+  qrSave:"이미지 저장",qrHelp:"휴대폰 카메라로 찍으면 앱이나 인터넷 없이 아래 내용이 바로 보입니다. 내용이 바뀌면 라벨을 다시 저장해 인쇄하세요.",qrText:"QR에 담기는 내용",qrNoUrl:"QR 링크가 아직 설정되지 않았습니다.",
   dlFail:"파일을 저장하지 못했습니다.",close:"닫기",examples:"예시",readonly:"보기 전용"},
  vi:{brand:"Seungkwang International · Xuất khẩu Việt Nam",title:"Bảng xếp pallet",search:"Tìm theo tên sản phẩm, mã vạch, LOT, số pallet",all:"Tất cả lô hàng",newP:"Pallet mới",paste:"Dán từ Excel",csv:"Lưu packing list",
   exNote:"Các pallet đang hiển thị là dữ liệu mẫu.",exClear:"Xóa dữ liệu mẫu",
@@ -236,7 +237,7 @@ var T = {
   pasteT:"Dán từ Excel",pasteHelp:"Tạo các cột theo thứ tự dưới đây trong Excel, sao chép và dán vào. Mỗi dòng là một pallet; số tầng được tính tự động.",
   cols:["Số pallet","Số lô hàng","Nơi đến","Tên sản phẩm","Mã vạch","Tổng thùng","Thùng/tầng","SL/thùng","LOT","Hạn dùng","SL thùng lẻ"],
   parsed:function(p,r){return "Đã đọc "+p+" pallet.";},importBtn:"Nhập",nothing:"Không có dòng hợp lệ. Kiểm tra thứ tự cột.",
-  qrSave:"Lưu ảnh",qrHelp:"Quét bằng camera điện thoại để mở ngay nội dung pallet này.",qrNoUrl:"Chưa thiết lập liên kết QR.",
+  qrSave:"Lưu ảnh",qrHelp:"Quét bằng camera điện thoại để xem ngay nội dung bên dưới, không cần ứng dụng hay Internet. Khi nội dung thay đổi, hãy in lại nhãn.",qrText:"Nội dung trong mã QR",qrNoUrl:"Chưa thiết lập liên kết QR.",
   dlFail:"Không lưu được tệp.",close:"Đóng",examples:"Mẫu",readonly:"Chỉ xem"}
 };
 
@@ -584,13 +585,38 @@ function qrSheet(p){
   var L=t(); if(!p) return "";
   var h='<div class="sheet-bg" data-act="bg"><div class="sheet narrow" role="dialog" aria-modal="true" aria-labelledby="qr-h"><header><h2 id="qr-h">'+esc(L.qr)+' · <span class="code">'+esc(p.code)+'</span></h2><button type="button" class="x" data-act="close" aria-label="'+esc(L.close)+'">'+icon("x")+'</button></header><div class="body">';
   h+='<div class="qrwrap"><img id="qrimg" alt="QR '+esc(p.code)+'"></div>';
-  h+='<p class="hint">'+esc(ARTIFACT_URL?L.qrHelp:L.qrNoUrl)+'</p>';
+  h+='<p class="hint">'+esc(L.qrHelp)+'</p><div><div class="hint" style="margin-bottom:4px;font-weight:600">'+esc(L.qrText)+'</div><pre class="qrtext">'+esc(qrPayload(p))+'</pre></div>';
   h+='</div><footer><span></span><span class="grow"><button type="button" class="btn" data-act="close">'+esc(L.close)+'</button>'+(cap.dl?'<button type="button" class="btn primary" data-act="qrSave">'+icon("dl")+esc(L.qrSave)+'</button>':'')+'</span></footer></div></div>';
   return h;
 }
 var lastLabel=null;
+function today(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function qrPayload(p){
+  var K=T.ko, tt=totals(p), out=[];
+  out.push("[승광 팔레트] "+p.code);
+  if(p.ship||p.dest) out.push("선적: "+(p.ship||"-")+(p.dest?" → "+p.dest:""));
+  out.push("상태: "+(K.st[p.status]||p.status||"-"));
+  if(isSingle(p)){
+    var it=p.item, sp=splitSingle(p);
+    out.push("제품: "+(it.n||"-"));
+    if(it.s) out.push("바코드: "+it.s);
+    if(it.l||it.e) out.push("LOT: "+(it.l||"-")+" / 유통기한: "+(it.e||"-"));
+    if(it.u) out.push("박스당: "+it.u+"개");
+    var parts=[]; if(sp.full) parts.push(sp.per+"박스×"+sp.full+"층"); if(sp.rem) parts.push("맨위 "+sp.rem+"박스"); if(tt.r) parts.push("잔량 1박스("+tt.r+"개)");
+    out.push("적재: "+parts.join(" + "));
+  } else {
+    var ls=p.layers||[], i=0;
+    function line(it){ return (it.n||"-")+" "+n0(it.c)+"박스"+(it.u?"×"+it.u+"개":"")+(it.l?" / LOT "+it.l:"")+(it.e?" / "+it.e:""); }
+    while(i<ls.length){ var sig=ls[i].map(line).join(" + "), j=i; while(j+1<ls.length && ls[j+1].map(line).join(" + ")===sig) j++; out.push((i===j?(i+1)+"층":(i+1)+"~"+(j+1)+"층")+": "+(sig||"-")); i=j+1; }
+  }
+  out.push("합계: "+tt.l+"층 · "+tt.c+"박스 · "+tt.u+"개"+(p.gross?" · "+p.gross+"kg":""));
+  if(p.size||p.height) out.push("규격: "+(p.size||"-")+(p.height?" · 높이 "+p.height+"mm":""));
+  if(p.note) out.push("메모: "+p.note);
+  out.push("출력일: "+today());
+  return out.join("\n");
+}
 function labelCanvas(p){
-  var link = ARTIFACT_URL ? ARTIFACT_URL.replace(/#.*$/,"")+"#"+slug(p.code) : p.code;
+  var link = qrPayload(p);
   var cv=document.createElement("canvas"), W=800, H=1000; cv.width=W; cv.height=H;
   var g=cv.getContext("2d");
   g.fillStyle="#fff"; g.fillRect(0,0,W,H);
@@ -604,13 +630,14 @@ function labelCanvas(p){
   g.font="500 30px 'Be Vietnam Pro','Noto Sans KR',sans-serif";
   fitText(g,tt.l+" layers / tầng · "+tt.c+" ctn"+(tt.r?" (+1 loose: "+tt.r+" pcs)":"")+" · "+tt.u+" pcs"+(p.gross?" · "+p.gross+" kg":""),56,yy,W-112);
   if(typeof qrcode==="function"){
-    var qr=qrcode(0,"M"); qr.addData(link); qr.make();
+    qrcode.stringToBytes=function(str){ var b=new TextEncoder().encode(str), a=[]; for(var i=0;i<b.length;i++) a.push(b[i]); return a; };
+    var qr=qrcode(0,link.length>180?"L":"M"); qr.addData(link,"Byte"); qr.make();
     var size=900-(yy+30), m=qr.getModuleCount(), cell=Math.floor(size/(m+6)), q0=(W-cell*m)/2, y0=yy+30+(size-cell*m)/2;
     for(var r=0;r<m;r++) for(var c=0;c<m;c++){ if(qr.isDark(r,c)) g.fillRect(q0+c*cell,y0+r*cell,cell,cell); }
   } else {
     g.font="500 28px sans-serif"; g.fillText("QR library not loaded",56,600);
   }
-  g.font="500 22px 'IBM Plex Mono',monospace"; g.fillStyle="#58656F"; fitText(g,"Scan to view contents · Quét để xem chi tiết",56,940,W-112);
+  g.font="500 22px 'IBM Plex Mono',monospace"; g.fillStyle="#58656F"; fitText(g,"Scan to view contents · Quét để xem chi tiết · 출력 "+today(),56,940,W-112);
   return cv;
 }
 function fitText(g,s,x,y,max){ var w=g.measureText(s).width; if(w>max){ g.save(); g.translate(x,y); g.scale(max/w,1); g.fillText(s,0,0); g.restore(); } else g.fillText(s,x,y); }
