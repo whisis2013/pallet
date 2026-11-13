@@ -207,7 +207,7 @@ var T = {
  ko:{brand:"주식회사 승광인터내셔널 · 베트남 수출",title:"팔레트 적재표",search:"제품명, 바코드, LOT, 팔레트 번호로 검색",all:"전체 선적",newP:"새 팔레트",paste:"엑셀 붙여넣기",csv:"패킹리스트 저장",
   exNote:"지금 보이는 팔레트는 예시입니다. 지우고 실제 적재 내용을 입력하세요.",exClear:"예시 지우기",
   modeSingle:"한 가지 제품",modeMixed:"여러 제품 섞음",total:"총 박스 수",perLayer:"층당 박스 수",content:"적재 내역",
-  calc:function(per,full,rem,tot,units,rr){ var s=full>0?(per+"박스 × "+full+"층"):""; if(rem) s+=(s?" + ":"")+"맨 위 "+rem+"박스"; if(rr) s+=(s?" + ":"")+"잔량 1박스("+rr+"개)"; return s+" = "+tot+"박스"+(units?" · "+units+"개":""); },
+  calc:function(per,full,rem,tot,units,rr){ var s=full>0?(per+"박스 × "+full+"층"):""; if(rem) s+=(s?" + ":"")+"맨 위층 "+rem+"박스"+(rr?" + 잔량 1박스("+rr+"개)":""); else if(rr) s+=(s?" + ":"")+"맨 위층 잔량 1박스("+rr+"개)"; return s+" = "+tot+"박스"+(units?" · "+units+"개":""); },
   needItem:"제품명과 총 박스 수를 입력하세요.",layerRange:function(a,b){ return a===b? a+"층" : a+"~"+b+"층"; },perCtnLabel:"박스당 수량",
   emptyList:"아직 등록된 팔레트가 없습니다. ‘새 팔레트’나 ‘엑셀 붙여넣기’로 시작하세요.",noMatch:"검색 결과가 없습니다.",pick:"왼쪽 목록에서 팔레트를 고르세요.",
   pallet:"팔레트",ship:"선적번호",dest:"도착지",size:"규격",spec:"규격(1개 용량)",gross:"총중량",height:"적재 높이",status:"상태",note:"메모",
@@ -215,7 +215,7 @@ var T = {
   st:{packing:"적재 중",ready:"적재 완료",shipped:"출고 완료"},
   stack:"측면 적재도",sheet:"층별 내역",product:"제품",sku:"바코드",ctn:"박스",per:"박스당",qty:"수량",lot:"LOT",exp:"유통기한",
   qr:"QR 라벨",edit:"수정",back:"목록",del:"삭제",dup:"복제",
-  editT:"팔레트 수정",newT:"새 팔레트",addItem:"제품 추가",addLayer:"위에 층 추가",delLayer:"층 삭제",save:"저장",cancel:"취소",nameKo:"제품명",remnant:"잔량 박스 수량(개)",remnantShort:"잔량 박스",remnantHint:"맨 위에 낱개가 덜 든 박스가 있으면 그 안의 수량을 적으세요. 총 박스 수에는 넣지 않고 따로 1박스로 셉니다.",
+  editT:"팔레트 수정",newT:"새 팔레트",addItem:"제품 추가",addLayer:"위에 층 추가",delLayer:"층 삭제",save:"저장",cancel:"취소",nameKo:"제품명",remnant:"잔량 박스 수량(개)",remnantShort:"잔량 박스",remnantHint:"낱개가 덜 든 박스가 있으면 그 안의 수량을 적으세요. 총 박스 수에는 넣지 않고 따로 1박스로 세며, 맨 위층 남은 자리에 함께 놓는 것으로 표시됩니다.",
   needCode:"팔레트 번호를 입력하세요.",dupCode:"이미 같은 번호의 팔레트가 있습니다.",
   saving:"저장 중…",saved:"저장했습니다",conflict:"다른 사람이 먼저 저장했습니다. 최신 내용으로 다시 열립니다.",ro:"보기 권한만 있어 저장할 수 없습니다.",saveErr:"저장하지 못했습니다. 잠시 후 다시 시도하세요.",
   delQ:"이 팔레트를 삭제할까요? 되돌릴 수 없습니다.",delYes:"삭제",clearQ:"예시 팔레트를 모두 지울까요?",
@@ -227,7 +227,7 @@ var T = {
  vi:{brand:"Seungkwang International · Xuất khẩu Việt Nam",title:"Bảng xếp pallet",search:"Tìm theo tên sản phẩm, mã vạch, LOT, số pallet",all:"Tất cả lô hàng",newP:"Pallet mới",paste:"Dán từ Excel",csv:"Lưu packing list",
   exNote:"Các pallet đang hiển thị là dữ liệu mẫu.",exClear:"Xóa dữ liệu mẫu",
   modeSingle:"Một sản phẩm",modeMixed:"Nhiều sản phẩm",total:"Tổng số thùng",perLayer:"Số thùng mỗi tầng",content:"Nội dung pallet",
-  calc:function(per,full,rem,tot,units,rr){ var s=full>0?(per+" thùng × "+full+" tầng"):""; if(rem) s+=(s?" + ":"")+"tầng trên "+rem+" thùng"; if(rr) s+=(s?" + ":"")+"1 thùng lẻ ("+rr+" sp)"; return s+" = "+tot+" thùng"+(units?" · "+units+" sp":""); },
+  calc:function(per,full,rem,tot,units,rr){ var s=full>0?(per+" thùng × "+full+" tầng"):""; if(rem) s+=(s?" + ":"")+"tầng trên "+rem+" thùng"+(rr?" + 1 thùng lẻ ("+rr+" sp)":""); else if(rr) s+=(s?" + ":"")+"tầng trên 1 thùng lẻ ("+rr+" sp)"; return s+" = "+tot+" thùng"+(units?" · "+units+" sp":""); },
   needItem:"Nhập tên sản phẩm và tổng số thùng.",layerRange:function(a,b){ return a===b? "Tầng "+a : "Tầng "+a+"–"+b; },perCtnLabel:"SL/thùng",
   emptyList:"Chưa có pallet nào.",noMatch:"Không tìm thấy kết quả.",pick:"Chọn một pallet trong danh sách.",
   pallet:"Pallet",ship:"Số lô hàng",dest:"Nơi đến",size:"Quy cách",spec:"Quy cách (1 sp)",gross:"Tổng trọng lượng",height:"Chiều cao xếp",status:"Trạng thái",note:"Ghi chú",
@@ -295,7 +295,8 @@ function totals(p){
   var c=0,u=0, ls=layersOf(p);
   ls.forEach(function(L){ L.forEach(function(it){ c+=n0(it.c); u+=n0(it.c)*n0(it.u); }); });
   var rr=remOf(p); if(rr){ c+=1; u+=rr; }
-  return {c:c,u:u,l:ls.length,r:rr};
+  var extra = (rr && !(splitSingle(p).rem>0)) ? 1 : 0;
+  return {c:c,u:u,l:ls.length+extra,r:rr};
 }
 function productsOf(p){
   var m={}, out=[];
@@ -440,8 +441,8 @@ function detail(p,q){
     h += '<dl class="kv">'+kv(L.sku,it.s,1)+kv(L.perCtnLabel,it.u?fmt(it.u)+" pcs":"",0)+kv(L.lot,it.l,1)+kv(L.exp,it.e,1)+kv(L.size,specOf(it),0)+kv(L.height,p.height?fmt(p.height)+" "+L.mm:"",0)+'</dl>';
     h += '<p class="calc num">'+esc(L.calc(fmt(sp.per),sp.full,sp.rem,fmt(tt.c),it.u?fmt(tt.u):"",tt.r?fmt(tt.r):""))+'</p></div>';
     h += '<div class="layer"><div class="tscroll"><table><thead><tr><th>'+esc(L.layers)+'</th><th class="r">'+esc(L.ctn)+'</th><th class="r">'+esc(L.qty)+'</th></tr></thead><tbody>';
-    if(tt.r) h += '<tr id="layer-rem"><td>'+esc(L.remnantShort)+' · '+esc(L.top)+'</td><td class="r num">1</td><td class="r num">'+fmt(tt.r)+'</td></tr>';
-    if(sp.rem) h += '<tr id="layer-'+sp.full+'"><td>'+esc(L.layerN(sp.full+1))+' · '+esc(L.top)+'</td><td class="r num">'+fmt(sp.rem)+'</td><td class="r num">'+(it.u?fmt(sp.rem*n0(it.u)):"—")+'</td></tr>';
+    if(sp.rem) h += '<tr id="layer-'+sp.full+'"><td>'+esc(L.layerN(sp.full+1))+' · '+esc(L.top)+'</td><td class="r num">'+fmt(sp.rem)+(tt.r?' + '+esc(L.remnantShort)+' 1':'')+'</td><td class="r num">'+(it.u?fmt(sp.rem*n0(it.u)+tt.r):"—")+'</td></tr>';
+    else if(tt.r) h += '<tr id="layer-'+sp.full+'"><td>'+esc(L.layerN(sp.full+1))+' · '+esc(L.top)+'</td><td class="r num">'+esc(L.remnantShort)+' 1</td><td class="r num">'+fmt(tt.r)+'</td></tr>';
     if(sp.full) h += '<tr id="layer-0"><td>'+esc(L.layerRange(1,sp.full))+'</td><td class="r num">'+fmt(sp.per)+' × '+sp.full+'</td><td class="r num">'+(it.u?fmt(sp.per*sp.full*n0(it.u)):"—")+'</td></tr>';
     h += '</tbody></table></div></div></div></div>';
     return h;
@@ -467,16 +468,13 @@ function kv(k,v,mono){ return '<div><dt>'+esc(k)+'</dt><dd'+(mono?' class="code"
 function stat(k,v,unit){ return '<div class="stat"><dt>'+esc(k)+'</dt><dd class="num">'+esc(v)+(unit?'<small>'+esc(unit)+'</small>':'')+'</dd></div>'; }
 
 function stackSVG(p,q){
-  var L=t(), layers=layersOf(p), n=layers.length;
+  var L=t(), layers=layersOf(p).map(function(Ly){ return Ly.slice(); }), rr=remOf(p);
+  if(rr){ var ri=withC(p.item,1); ri._rem=rr; if(splitSingle(p).rem>0 && layers.length) layers[layers.length-1].push(ri); else layers.push([ri]); }
+  var n=layers.length;
   var W=300, X0=34, BW=W-X0-4, LH=n>10?24:(n>7?30:40), G=3, base=20, top=6;
   var maxC=0; layers.forEach(function(Ly){ var c=0; Ly.forEach(function(it){ c+=n0(it.c); }); if(c>maxC) maxC=c; });
-  var rr=remOf(p), RH=Math.round(LH*0.75); if(rr) top+=RH+G;
   var H=top+n*(LH+G)+base+4;
   var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+esc(L.stack)+'">';
-  if(rr){ var col=pcolor(p.item);
-    s+='<g class="lay" data-act="layer" data-v="rem" tabindex="0" role="button" aria-label="'+esc(L.remnantShort)+'"><rect x="'+(X0+1)+'" y="6" width="58" height="'+RH+'" rx="2" fill="'+col+'" fill-opacity=".35" stroke="'+col+'" stroke-width="1.5" stroke-dasharray="4 2"><title>'+esc(L.remnantShort)+' · '+fmt(rr)+' pcs</title></rect>';
-    s+='<text x="'+(X0+30)+'" y="'+(6+RH/2+4)+'" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--ink)" font-family="IBM Plex Mono, monospace" pointer-events="none">'+fmt(rr)+'pcs</text>';
-    s+='<text x="'+(X0+66)+'" y="'+(6+RH/2+4)+'" font-size="11.5" fill="var(--muted)" pointer-events="none">'+esc(L.remnantShort)+'</text></g>'; }
   for(var i=n-1;i>=0;i--){
     var y=top+(n-1-i)*(LH+G);
     var Ly=layers[i], tot=0; Ly.forEach(function(it){ tot+=n0(it.c); });
@@ -487,6 +485,11 @@ function stackSVG(p,q){
     Ly.forEach(function(it){
       var w = maxC? BW*n0(it.c)/maxC : 0; if(w<=0) return;
       var hit = matches(it,q);
+      if(it._rem){
+        s+='<rect x="'+(x+1.5)+'" y="'+(y+1)+'" width="'+Math.max(w-3,1)+'" height="'+(LH-2)+'" rx="2" fill="'+pcolor(it)+'" fill-opacity=".3" stroke="'+pcolor(it)+'" stroke-width="1.5" stroke-dasharray="4 2"><title>'+esc(L.remnantShort)+' · '+fmt(it._rem)+' pcs</title></rect>';
+        s+='<text x="'+(x+w/2)+'" y="'+(y+LH/2+4)+'" text-anchor="middle" font-size="'+(w>60?11.5:10)+'" font-weight="600" fill="var(--ink)" font-family="IBM Plex Mono, monospace" pointer-events="none">'+(w>44?fmt(it._rem)+"pcs":fmt(it._rem))+'</text>';
+        x+=w; return;
+      }
       s+='<rect x="'+(x+0.5)+'" y="'+y+'" width="'+Math.max(w-1,1)+'" height="'+LH+'" rx="2" fill="'+pcolor(it)+'"'+(hit?' stroke="var(--ink)" stroke-width="2.5"':'')+'><title>'+esc(iname(it))+' · '+fmt(it.c)+' '+esc(L.ctn)+'</title></rect>';
       if(w>26) s+='<text x="'+(x+w/2)+'" y="'+(y+LH/2+4)+'" text-anchor="middle" font-size="12" font-weight="600" fill="var(--on-p)" font-family="IBM Plex Mono, monospace" pointer-events="none">'+fmt(it.c)+'</text>';
       x+=w;
