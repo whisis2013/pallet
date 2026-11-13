@@ -152,15 +152,15 @@ tr.flash td{background:var(--accent-soft)}
 .sheet footer .grow{display:flex;gap:8px;flex-wrap:wrap}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
 label.f{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted);font-weight:500;min-width:0}
-label.f input,label.f select,label.f textarea,.ed input{border:1px solid var(--line);background:var(--sunk);border-radius:5px;padding:8px 9px;color:var(--ink);font-size:14px;width:100%;min-width:0}
+label.f input,label.f select,label.f textarea,.ed input,.ed select{border:1px solid var(--line);background:var(--sunk);border-radius:5px;padding:8px 9px;color:var(--ink);font-size:14px;width:100%;min-width:0}
 label.f textarea{min-height:64px;resize:vertical}
 .ed-layer{border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .ed-layer > header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;background:var(--sunk);border-bottom:1px solid var(--line)}
-.ed{min-width:640px}
+.ed{min-width:780px}
 .ed th{padding:6px 6px}
 .ed td{padding:5px 6px;border-bottom:1px solid var(--line)}
-.ed input{padding:6px 7px;font-size:13px}
-.ed .w-n{width:36%}.ed .w-s{width:17%}.ed .w-c{width:8%}.ed .w-l{width:11%}.ed .w-e{width:10%}
+.ed input,.ed select{padding:6px 7px;font-size:13px}
+.ed .w-n{width:28%}.ed .w-q{width:16%}.ed .w-s{width:15%}.ed .w-c{width:8%}.ed .w-l{width:11%}.ed .w-e{width:10%}
 .x{border:0;background:transparent;color:var(--muted);padding:6px 8px;border-radius:4px}
 .x:hover{color:var(--danger);background:var(--sunk)}
 .hint{color:var(--muted);font-size:12.5px;margin:0}
@@ -210,7 +210,7 @@ var T = {
   calc:function(per,full,rem,tot,units,rr){ var s=full>0?(per+"박스 × "+full+"층"):""; if(rem) s+=(s?" + ":"")+"맨 위 "+rem+"박스"; if(rr) s+=(s?" + ":"")+"잔량 1박스("+rr+"개)"; return s+" = "+tot+"박스"+(units?" · "+units+"개":""); },
   needItem:"제품명과 총 박스 수를 입력하세요.",layerRange:function(a,b){ return a===b? a+"층" : a+"~"+b+"층"; },perCtnLabel:"박스당 수량",
   emptyList:"아직 등록된 팔레트가 없습니다. ‘새 팔레트’나 ‘엑셀 붙여넣기’로 시작하세요.",noMatch:"검색 결과가 없습니다.",pick:"왼쪽 목록에서 팔레트를 고르세요.",
-  pallet:"팔레트",ship:"선적번호",dest:"도착지",size:"규격(mm)",gross:"총중량",height:"높이",status:"상태",note:"메모",
+  pallet:"팔레트",ship:"선적번호",dest:"도착지",size:"규격",spec:"규격(1개 용량)",gross:"총중량",height:"적재 높이",status:"상태",note:"메모",
   layers:"층수",cartons:"박스",units:"총수량",kg:"kg",mm:"mm",layerN:function(n){return n+"층";},top:"상단",bottom:"하단",
   st:{packing:"적재 중",ready:"적재 완료",shipped:"출고 완료"},
   stack:"측면 적재도",sheet:"층별 내역",product:"제품",sku:"바코드",ctn:"박스",per:"박스당",qty:"수량",lot:"LOT",exp:"유통기한",
@@ -219,8 +219,8 @@ var T = {
   needCode:"팔레트 번호를 입력하세요.",dupCode:"이미 같은 번호의 팔레트가 있습니다.",
   saving:"저장 중…",saved:"저장했습니다",conflict:"다른 사람이 먼저 저장했습니다. 최신 내용으로 다시 열립니다.",ro:"보기 권한만 있어 저장할 수 없습니다.",saveErr:"저장하지 못했습니다. 잠시 후 다시 시도하세요.",
   delQ:"이 팔레트를 삭제할까요? 되돌릴 수 없습니다.",delYes:"삭제",clearQ:"예시 팔레트를 모두 지울까요?",
-  pasteT:"엑셀에서 붙여넣기",pasteHelp:"엑셀에서 아래 순서대로 열을 만들고, 범위를 복사해 붙여넣으세요. 한 줄이 팔레트 하나입니다. 층은 총 박스 수와 층당 박스 수로 자동 계산됩니다. 잔량 박스가 없으면 마지막 칸은 비워 두세요. 같은 번호가 이미 있으면 새 내용으로 바뀝니다.",
-  cols:["팔레트번호","선적번호","도착지","제품명","바코드","총박스수","층당박스수","박스당수량","LOT","유통기한","잔량수량"],
+  pasteT:"엑셀에서 붙여넣기",pasteHelp:"엑셀에서 아래 순서대로 열을 만들고, 범위를 복사해 붙여넣으세요. 한 줄이 팔레트 하나입니다. 층은 총 박스 수와 층당 박스 수로 자동 계산됩니다. 잔량 박스가 없으면 잔량수량 칸은 비워 두세요. 단위는 ml 또는 g으로 적습니다. 같은 번호가 이미 있으면 새 내용으로 바뀝니다.",
+  cols:["팔레트번호","선적번호","도착지","제품명","바코드","총박스수","층당박스수","박스당수량","LOT","유통기한","잔량수량","규격","단위(ml/g)"],
   parsed:function(p,r){return "팔레트 "+p+"개를 읽었습니다.";},importBtn:"가져오기",nothing:"읽을 수 있는 줄이 없습니다. 열 순서를 확인하세요.",
   qrSave:"이미지 저장",qrHelp:"휴대폰 카메라로 찍으면 브라우저에서 이 팔레트의 적재 화면이 열립니다. 로그인은 필요 없습니다. 적재 내용이 바뀌면 라벨을 다시 저장해 인쇄하세요.",qrPreview:"찍었을 때 열리는 화면 미리보기",qrNoUrl:"QR 링크가 아직 설정되지 않았습니다.",
   dlFail:"파일을 저장하지 못했습니다.",close:"닫기",examples:"예시",readonly:"보기 전용"},
@@ -230,7 +230,7 @@ var T = {
   calc:function(per,full,rem,tot,units,rr){ var s=full>0?(per+" thùng × "+full+" tầng"):""; if(rem) s+=(s?" + ":"")+"tầng trên "+rem+" thùng"; if(rr) s+=(s?" + ":"")+"1 thùng lẻ ("+rr+" sp)"; return s+" = "+tot+" thùng"+(units?" · "+units+" sp":""); },
   needItem:"Nhập tên sản phẩm và tổng số thùng.",layerRange:function(a,b){ return a===b? "Tầng "+a : "Tầng "+a+"–"+b; },perCtnLabel:"SL/thùng",
   emptyList:"Chưa có pallet nào.",noMatch:"Không tìm thấy kết quả.",pick:"Chọn một pallet trong danh sách.",
-  pallet:"Pallet",ship:"Số lô hàng",dest:"Nơi đến",size:"Kích thước (mm)",gross:"Tổng trọng lượng",height:"Chiều cao",status:"Trạng thái",note:"Ghi chú",
+  pallet:"Pallet",ship:"Số lô hàng",dest:"Nơi đến",size:"Quy cách",spec:"Quy cách (1 sp)",gross:"Tổng trọng lượng",height:"Chiều cao xếp",status:"Trạng thái",note:"Ghi chú",
   layers:"Số tầng",cartons:"Thùng",units:"Tổng số lượng",kg:"kg",mm:"mm",layerN:function(n){return "Tầng "+n;},top:"trên cùng",bottom:"dưới cùng",
   st:{packing:"Đang xếp",ready:"Đã xếp xong",shipped:"Đã xuất"},
   stack:"Sơ đồ xếp (mặt bên)",sheet:"Chi tiết từng tầng",product:"Sản phẩm",sku:"Mã vạch",ctn:"Thùng",per:"SL/thùng",qty:"Số lượng",lot:"LOT",exp:"Hạn dùng",
@@ -240,7 +240,7 @@ var T = {
   saving:"Đang lưu…",saved:"Đã lưu",conflict:"Người khác vừa lưu trước. Trang sẽ mở lại bản mới nhất.",ro:"Bạn chỉ có quyền xem.",saveErr:"Không lưu được. Hãy thử lại sau.",
   delQ:"Xóa pallet này? Không thể hoàn tác.",delYes:"Xóa",clearQ:"Xóa toàn bộ pallet mẫu?",
   pasteT:"Dán từ Excel",pasteHelp:"Tạo các cột theo thứ tự dưới đây trong Excel, sao chép và dán vào. Mỗi dòng là một pallet; số tầng được tính tự động.",
-  cols:["Số pallet","Số lô hàng","Nơi đến","Tên sản phẩm","Mã vạch","Tổng thùng","Thùng/tầng","SL/thùng","LOT","Hạn dùng","SL thùng lẻ"],
+  cols:["Số pallet","Số lô hàng","Nơi đến","Tên sản phẩm","Mã vạch","Tổng thùng","Thùng/tầng","SL/thùng","LOT","Hạn dùng","SL thùng lẻ","Quy cách","Đơn vị (ml/g)"],
   parsed:function(p,r){return "Đã đọc "+p+" pallet.";},importBtn:"Nhập",nothing:"Không có dòng hợp lệ. Kiểm tra thứ tự cột.",
   qrSave:"Lưu ảnh",qrHelp:"Quét bằng camera điện thoại để mở màn hình xếp hàng của pallet này trên trình duyệt, không cần đăng nhập. Khi nội dung thay đổi, hãy in lại nhãn.",qrPreview:"Xem trước màn hình khi quét",qrNoUrl:"Chưa thiết lập liên kết QR.",
   dlFail:"Không lưu được tệp.",close:"Đóng",examples:"Mẫu",readonly:"Chỉ xem"}
@@ -261,6 +261,8 @@ function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){retu
 function n0(x){ var v = Number(x); return isFinite(v)?v:0; }
 function fmt(x){ return n0(x).toLocaleString(ui.lang==="vi"?"vi-VN":"ko-KR"); }
 function iname(it){ return it.n||it.v||"—"; }
+function specOf(it){ var q=String(it&&it.q!=null?it.q:"").trim(); return q? q+" "+(it.qu||"ml") : ""; }
+function unitSel(id,val,attrs){ return '<select id="'+id+'" '+attrs+'>'+["ml","g"].map(function(u){ return '<option value="'+u+'"'+((val||"ml")===u?" selected":"")+'>'+u+'</option>'; }).join("")+'</select>'; }
 function ialt(it){ return ""; }
 function slug(s){ return String(s||"").trim().replace(/[^A-Za-z0-9-]+/g,"-").replace(/^-+|-+$/g,""); }
 function findP(code){ for(var i=0;i<state.pallets.length;i++){ if(state.pallets[i].code===code) return state.pallets[i]; } return null; }
@@ -297,7 +299,7 @@ function totals(p){
 }
 function productsOf(p){
   var m={}, out=[];
-  layersOf(p).forEach(function(Ly){ Ly.forEach(function(it){ var k=(it.s||"")+"|"+(it.n||it.v)+"|"+(it.l||""); if(!m[k]){ m[k]=withC(it,0); out.push(m[k]); } m[k].c+=n0(it.c); }); });
+  layersOf(p).forEach(function(Ly){ Ly.forEach(function(it){ var k=(it.s||"")+"|"+(it.n||it.v)+"|"+(it.l||"")+"|"+(it.q||"")+(it.qu||""); if(!m[k]){ m[k]=withC(it,0); out.push(m[k]); } m[k].c+=n0(it.c); }); });
   return out;
 }
 function matches(it,q){
@@ -361,7 +363,7 @@ function render(){
     var p=r.p, tt=totals(p);
     h += '<a class="pcard" href="#'+esc(slug(p.code))+'" aria-current="'+(sel===p)+'"><div class="row1"><span class="code">'+esc(p.code)+'</span>'+pill(p.status)+'</div>';
     h += '<div class="meta"><span class="code">'+esc(p.ship||"—")+'</span> · '+esc(p.dest||"")+'</div>';
-    if(isSingle(p)) h += '<div class="pname">'+esc(iname(p.item))+'</div>';
+    if(isSingle(p)) h += '<div class="pname">'+esc(iname(p.item))+(specOf(p.item)?' · '+esc(specOf(p.item)):'')+'</div>';
     h += '<div class="meta num">'+tt.l+' '+esc(L.layers)+' · '+fmt(tt.c)+' '+esc(L.cartons)+' · '+fmt(tt.u)+' pcs</div>';
     h += miniBar(p);
     if(r.hits.length){
@@ -423,19 +425,19 @@ function detail(p,q){
   h += stat(L.cartons, fmt(tt.c), "");
   h += stat(L.units, fmt(tt.u), "pcs");
   h += stat(L.gross, p.gross?fmt(p.gross):"—", p.gross?L.kg:"");
-  if(!single) h += stat(L.size, p.size||"—", p.height?(" · "+fmt(p.height)+L.mm):"");
+  if(!single) h += stat(L.height, p.height?fmt(p.height):"—", p.height?L.mm:"");
   h += '</dl>';
   h += '<div class="dbody"><div class="stackbox"><h3>'+esc(L.stack)+'</h3><div class="stack">'+stackSVG(p,q)+'</div>';
   if(!single){
     var leg=productsOf(p), seenL={}; leg=leg.filter(function(it){ var k=it.s||it.n; if(seenL[k]) return false; seenL[k]=1; return true; });
-    if(leg.length) h += '<ul class="legend">'+leg.map(function(it){ return '<li><i style="background:'+pcolor(it)+'"></i><span>'+esc(iname(it))+'</span></li>'; }).join("")+'</ul>';
+    if(leg.length) h += '<ul class="legend">'+leg.map(function(it){ return '<li><i style="background:'+pcolor(it)+'"></i><span>'+esc(iname(it))+(specOf(it)?' · '+esc(specOf(it)):'')+'</span></li>'; }).join("")+'</ul>';
   }
   if(p.note) h += '<div class="note"><b>'+esc(L.note)+'</b>\n'+esc(p.note)+'</div>';
   h += '</div><div class="sheets">';
   if(single){
     var it=p.item, alt=ialt(it);
-    h += '<h3>'+esc(L.content)+'</h3><div class="prod'+(matches(it,q)?' hit':'')+'"><div class="prod-h"><span class="sw" style="background:'+pcolor(it)+'"></span><div><b>'+esc(iname(it))+'</b>'+(alt?'<span class="alt">'+esc(alt)+'</span>':'')+'</div></div>';
-    h += '<dl class="kv">'+kv(L.sku,it.s,1)+kv(L.perCtnLabel,it.u?fmt(it.u)+" pcs":"",0)+kv(L.lot,it.l,1)+kv(L.exp,it.e,1)+kv(L.size,(p.size||"")+(p.height?" · H "+fmt(p.height)+L.mm:""),1)+'</dl>';
+    h += '<h3>'+esc(L.content)+'</h3><div class="prod'+(matches(it,q)?' hit':'')+'"><div class="prod-h"><span class="sw" style="background:'+pcolor(it)+'"></span><div><b>'+esc(iname(it))+'</b>'+(specOf(it)?' <span class="num" style="color:var(--muted);font-weight:500">'+esc(specOf(it))+'</span>':'')+(alt?'<span class="alt">'+esc(alt)+'</span>':'')+'</div></div>';
+    h += '<dl class="kv">'+kv(L.sku,it.s,1)+kv(L.perCtnLabel,it.u?fmt(it.u)+" pcs":"",0)+kv(L.lot,it.l,1)+kv(L.exp,it.e,1)+kv(L.size,specOf(it),0)+kv(L.height,p.height?fmt(p.height)+" "+L.mm:"",0)+'</dl>';
     h += '<p class="calc num">'+esc(L.calc(fmt(sp.per),sp.full,sp.rem,fmt(tt.c),it.u?fmt(tt.u):"",tt.r?fmt(tt.r):""))+'</p></div>';
     h += '<div class="layer"><div class="tscroll"><table><thead><tr><th>'+esc(L.layers)+'</th><th class="r">'+esc(L.ctn)+'</th><th class="r">'+esc(L.qty)+'</th></tr></thead><tbody>';
     if(tt.r) h += '<tr id="layer-rem"><td>'+esc(L.remnantShort)+' · '+esc(L.top)+'</td><td class="r num">1</td><td class="r num">'+fmt(tt.r)+'</td></tr>';
@@ -450,12 +452,12 @@ function detail(p,q){
     var Ly=p.layers[i], lc=0, lu=0;
     Ly.forEach(function(it){ lc+=n0(it.c); lu+=n0(it.c)*n0(it.u); });
     var tag = n>1 ? (i===n-1?" · "+L.top:(i===0?" · "+L.bottom:"")) : "";
-    h += '<div class="layer" id="layer-'+i+'"><header><b>'+esc(L.layerN(i+1))+esc(tag)+'</b><span class="num">'+fmt(lc)+' '+esc(L.ctn)+' · '+fmt(lu)+' pcs</span></header><div class="tscroll"><table><thead><tr><th>'+esc(L.product)+'</th><th>'+esc(L.sku)+'</th><th class="r">'+esc(L.ctn)+'</th><th class="r">'+esc(L.per)+'</th><th class="r">'+esc(L.qty)+'</th><th>'+esc(L.lot)+'</th><th>'+esc(L.exp)+'</th></tr></thead><tbody>';
+    h += '<div class="layer" id="layer-'+i+'"><header><b>'+esc(L.layerN(i+1))+esc(tag)+'</b><span class="num">'+fmt(lc)+' '+esc(L.ctn)+' · '+fmt(lu)+' pcs</span></header><div class="tscroll"><table><thead><tr><th>'+esc(L.product)+'</th><th>'+esc(L.size)+'</th><th>'+esc(L.sku)+'</th><th class="r">'+esc(L.ctn)+'</th><th class="r">'+esc(L.per)+'</th><th class="r">'+esc(L.qty)+'</th><th>'+esc(L.lot)+'</th><th>'+esc(L.exp)+'</th></tr></thead><tbody>';
     Ly.forEach(function(it){
       var alt = ialt(it);
-      h += '<tr'+(matches(it,q)?' class="hit"':'')+'><td><span class="sw" style="background:'+pcolor(it)+'"></span>'+esc(iname(it))+(alt?'<span class="alt">'+esc(alt)+'</span>':'')+'</td><td class="code">'+esc(it.s||"—")+'</td><td class="r num">'+fmt(it.c)+'</td><td class="r num">'+(it.u?fmt(it.u):"—")+'</td><td class="r num">'+(it.u?fmt(n0(it.c)*n0(it.u)):"—")+'</td><td class="code">'+esc(it.l||"—")+'</td><td class="code">'+esc(it.e||"—")+'</td></tr>';
+      h += '<tr'+(matches(it,q)?' class="hit"':'')+'><td><span class="sw" style="background:'+pcolor(it)+'"></span>'+esc(iname(it))+(alt?'<span class="alt">'+esc(alt)+'</span>':'')+'</td><td class="num" style="white-space:nowrap">'+esc(specOf(it)||"—")+'</td><td class="code">'+esc(it.s||"—")+'</td><td class="r num">'+fmt(it.c)+'</td><td class="r num">'+(it.u?fmt(it.u):"—")+'</td><td class="r num">'+(it.u?fmt(n0(it.c)*n0(it.u)):"—")+'</td><td class="code">'+esc(it.l||"—")+'</td><td class="code">'+esc(it.e||"—")+'</td></tr>';
     });
-    if(!Ly.length) h += '<tr><td colspan="7" style="color:var(--muted)">—</td></tr>';
+    if(!Ly.length) h += '<tr><td colspan="8" style="color:var(--muted)">—</td></tr>';
     h += '</tbody></table></div></div>';
   }
   h += '</div></div>';
@@ -501,7 +503,7 @@ function stackSVG(p,q){
 }
 
 /* ---------- edit sheet ---------- */
-function blankItem(){ return {n:"",v:"",s:"",c:"",u:"",l:"",e:""}; }
+function blankItem(){ return {n:"",q:"",qu:"ml",s:"",c:"",u:"",l:"",e:""}; }
 function editSheet(){
   var L=t(), d=ui.draft;
   var h='<div class="sheet-bg" data-act="bg"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ed-h"><header><h2 id="ed-h">'+esc(ui.draftOrig?L.editT:L.newT)+'</h2><button type="button" class="x" data-act="close" aria-label="'+esc(L.close)+'">'+icon("x")+'</button></header><div class="body">';
@@ -509,7 +511,6 @@ function editSheet(){
   h+=fld("f-code",L.pallet,d.code,"code");
   h+=fld("f-ship",L.ship,d.ship,"ship");
   h+=fld("f-dest",L.dest,d.dest,"dest");
-  h+=fld("f-size",L.size,d.size,"size");
   h+=fld("f-gross",L.gross+" ("+L.kg+")",d.gross,"gross","number");
   h+=fld("f-height",L.height+" ("+L.mm+")",d.height,"height","number");
   h+='<label class="f">'+esc(L.status)+'<select id="f-status" data-k="status">'+["packing","ready","shipped"].map(function(s){ return '<option value="'+s+'"'+(d.status===s?' selected':'')+'>'+esc(L.st[s])+'</option>'; }).join("")+'</select></label>';
@@ -519,7 +520,7 @@ function editSheet(){
   h+='<div class="seg mode" role="group"><button type="button" data-act="mode" data-v="single" aria-pressed="'+single+'">'+esc(L.modeSingle)+'</button><button type="button" data-act="mode" data-v="mixed" aria-pressed="'+(!single)+'">'+esc(L.modeMixed)+'</button></div>';
   if(single){
     var it=d.item;
-    h+='<div class="fgrid">'+ifld("i-n",L.nameKo,it.n,"n",' list="dl-n"')+ifld("i-s",L.sku,it.s,"s",' inputmode="numeric"')+ifld("i-u",L.perCtnLabel,it.u,"u",' inputmode="numeric"')+ifld("i-l",L.lot,it.l,"l","")+ifld("i-e",L.exp,it.e,"e",' placeholder="2029-09"')+'</div>';
+    h+='<div class="fgrid">'+ifld("i-n",L.nameKo,it.n,"n",' list="dl-n"')+'<label class="f">'+esc(L.spec)+'<span style="display:flex;gap:6px"><input id="i-q" data-ik="q" inputmode="decimal" placeholder="200" value="'+esc(it.q==null?"":it.q)+'" style="flex:1 1 auto">'+unitSel("i-qu",it.qu,'data-ik="qu" style="flex:0 0 76px"')+'</span></label>'+ifld("i-s",L.sku,it.s,"s",' inputmode="numeric"')+ifld("i-u",L.perCtnLabel,it.u,"u",' inputmode="numeric"')+ifld("i-l",L.lot,it.l,"l","")+ifld("i-e",L.exp,it.e,"e",' placeholder="2029-09"')+'</div>';
     h+='<div class="fgrid">'+fld("f-total",L.total,d.total,"total","number")+fld("f-per",L.perLayer,d.per,"per","number")+ifld("i-r",L.remnant,it.r,"r",' inputmode="numeric" placeholder="0"')+'</div><p class="hint">'+esc(L.remnantHint)+'</p>';
     var sp=splitSingle(d);
     var rr0=Math.floor(n0(it.r));
@@ -528,16 +529,16 @@ function editSheet(){
   var n=d.layers.length;
   for(var i=n-1;i>=0;i--){
     var tag = n>1 ? (i===n-1?" · "+L.top:(i===0?" · "+L.bottom:"")) : "";
-    h+='<div class="ed-layer"><header><b>'+esc(L.layerN(i+1))+esc(tag)+'</b><span style="display:flex;gap:6px"><button type="button" class="btn ghost" data-act="addItem" data-v="'+i+'">'+icon("plus")+esc(L.addItem)+'</button>'+(n>1?'<button type="button" class="btn ghost danger" data-act="delLayer" data-v="'+i+'">'+esc(L.delLayer)+'</button>':'')+'</span></header><div class="tscroll"><table class="ed"><thead><tr><th class="w-n">'+esc(L.nameKo)+'</th><th class="w-s">'+esc(L.sku)+'</th><th class="w-c">'+esc(L.ctn)+'</th><th class="w-c">'+esc(L.per)+'</th><th class="w-l">'+esc(L.lot)+'</th><th class="w-e">'+esc(L.exp)+'</th><th></th></tr></thead><tbody>';
+    h+='<div class="ed-layer"><header><b>'+esc(L.layerN(i+1))+esc(tag)+'</b><span style="display:flex;gap:6px"><button type="button" class="btn ghost" data-act="addItem" data-v="'+i+'">'+icon("plus")+esc(L.addItem)+'</button>'+(n>1?'<button type="button" class="btn ghost danger" data-act="delLayer" data-v="'+i+'">'+esc(L.delLayer)+'</button>':'')+'</span></header><div class="tscroll"><table class="ed"><thead><tr><th class="w-n">'+esc(L.nameKo)+'</th><th class="w-q">'+esc(L.size)+'</th><th class="w-s">'+esc(L.sku)+'</th><th class="w-c">'+esc(L.ctn)+'</th><th class="w-c">'+esc(L.per)+'</th><th class="w-l">'+esc(L.lot)+'</th><th class="w-e">'+esc(L.exp)+'</th><th></th></tr></thead><tbody>';
     d.layers[i].forEach(function(it,j){
       var p='e-'+i+'-'+j+'-';
-      h+='<tr><td><input id="'+p+'n" data-li="'+i+'" data-ii="'+j+'" data-f="n" value="'+esc(it.n)+'" list="dl-n"></td><td><input id="'+p+'s" data-li="'+i+'" data-ii="'+j+'" data-f="s" value="'+esc(it.s)+'" inputmode="numeric"></td><td><input id="'+p+'c" data-li="'+i+'" data-ii="'+j+'" data-f="c" value="'+esc(it.c)+'" inputmode="numeric"></td><td><input id="'+p+'u" data-li="'+i+'" data-ii="'+j+'" data-f="u" value="'+esc(it.u)+'" inputmode="numeric"></td><td><input id="'+p+'l" data-li="'+i+'" data-ii="'+j+'" data-f="l" value="'+esc(it.l)+'"></td><td><input id="'+p+'e" data-li="'+i+'" data-ii="'+j+'" data-f="e" value="'+esc(it.e)+'" placeholder="2029-09"></td><td><button type="button" class="x" data-act="delItem" data-v="'+i+'" data-w="'+j+'" aria-label="'+esc(L.del)+'">'+icon("x")+'</button></td></tr>';
+      h+='<tr><td><input id="'+p+'n" data-li="'+i+'" data-ii="'+j+'" data-f="n" value="'+esc(it.n)+'" list="dl-n"></td><td><span style="display:flex;gap:4px"><input id="'+p+'q" data-li="'+i+'" data-ii="'+j+'" data-f="q" value="'+esc(it.q==null?"":it.q)+'" inputmode="decimal" style="min-width:0">'+unitSel(p+"qu",it.qu,'data-li="'+i+'" data-ii="'+j+'" data-f="qu" style="width:62px;flex:0 0 62px"')+'</span></td><td><input id="'+p+'s" data-li="'+i+'" data-ii="'+j+'" data-f="s" value="'+esc(it.s)+'" inputmode="numeric"></td><td><input id="'+p+'c" data-li="'+i+'" data-ii="'+j+'" data-f="c" value="'+esc(it.c)+'" inputmode="numeric"></td><td><input id="'+p+'u" data-li="'+i+'" data-ii="'+j+'" data-f="u" value="'+esc(it.u)+'" inputmode="numeric"></td><td><input id="'+p+'l" data-li="'+i+'" data-ii="'+j+'" data-f="l" value="'+esc(it.l)+'"></td><td><input id="'+p+'e" data-li="'+i+'" data-ii="'+j+'" data-f="e" value="'+esc(it.e)+'" placeholder="2029-09"></td><td><button type="button" class="x" data-act="delItem" data-v="'+i+'" data-w="'+j+'" aria-label="'+esc(L.del)+'">'+icon("x")+'</button></td></tr>';
     });
     h+='</tbody></table></div></div>';
   }
   h+='<div><button type="button" class="btn" data-act="addLayer">'+icon("plus")+esc(L.addLayer)+'</button></div>';
   }
-  h+='<p class="hint">'+(ui.lang==="ko"?"제품명을 입력하면 이미 등록한 제품이 목록에 뜹니다. 고르면 베트남어명·바코드가 자동으로 채워집니다.":"Gõ tên sản phẩm để chọn sản phẩm đã có; tên tiếng Việt và mã vạch sẽ tự điền.")+'</p>';
+  h+='<p class="hint">'+(ui.lang==="ko"?"제품명을 입력하면 이미 등록한 제품이 목록에 뜹니다. 고르면 바코드·규격·박스당 수량이 자동으로 채워집니다.":"Gõ tên sản phẩm để chọn sản phẩm đã có; mã vạch, quy cách và SL/thùng sẽ tự điền.")+'</p>';
   h+='<datalist id="dl-n">'+catalog().map(function(c){ return '<option value="'+esc(c.n)+'">'; }).join("")+'</datalist>';
   if(ui.err) h+='<p class="err" role="alert">'+esc(ui.err)+'</p>';
   h+='</div><footer><span class="grow">'+(ui.draftOrig?'<button type="button" class="btn danger" data-act="del">'+esc(L.del)+'</button>':'')+'</span><span class="grow"><button type="button" class="btn" data-act="close">'+esc(L.cancel)+'</button><button type="button" class="btn primary" data-act="save"'+(ui.busy?' disabled':'')+'>'+esc(ui.busy?L.saving:L.save)+'</button></span></footer></div></div>';
@@ -572,10 +573,10 @@ function parsePaste(txt){
     function num(x){ return n0(String(x||"").replace(/,/g,"")); }
     var code=c[0], tot=Math.floor(num(c[5])), per=Math.floor(num(c[6]));
     if(!code || !c[3] || !(tot>0)) return;
-    var item={n:c[3]||"",s:c[4]||"",u:num(c[7])||"",l:c[8]||"",e:c[9]||""}; var r0=Math.floor(num(c[10])); if(r0>0) item.r=r0;
+    var item={n:c[3]||"",s:c[4]||"",u:num(c[7])||"",l:c[8]||"",e:c[9]||""}; var r0=Math.floor(num(c[10])); if(r0>0) item.r=r0; if(c[11]) item.q=String(c[11]).replace(/\s*(ml|g)\s*$/i,""); var un=String(c[12]||(String(c[11]||"").match(/(ml|g)\s*$/i)||[])[1]||"").toLowerCase(); if(item.q) item.qu=(un==="g"?"g":"ml");
     var p = byCode[code];
     if(!p){
-      p = byCode[code] = {code:code,ship:c[1]||"",dest:c[2]||"",size:"1100×1100",gross:"",height:"",status:"packing",note:"",item:item,total:tot,per:per||""}; order.push(code);
+      p = byCode[code] = {code:code,ship:c[1]||"",dest:c[2]||"",gross:"",height:"",status:"packing",note:"",item:item,total:tot,per:per||""}; order.push(code);
     } else {
       if(p.mode!=="mixed"){ p.layers=layersOf(p); p.mode="mixed"; delete p.item; delete p.total; delete p.per; }
       p.layers=p.layers.concat(layersOf({item:item,total:tot,per:per}));
@@ -625,7 +626,7 @@ function b64u(str){ var b=new TextEncoder().encode(str), bin=""; for(var i=0;i<b
 function unb64u(s){ s=s.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; var bin=atob(s), b=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) b[i]=bin.charCodeAt(i); return new TextDecoder().decode(b); }
 function packPallet(p){
   var o={}; ["code","ship","dest","size","gross","height","status","note","mode","total","per"].forEach(function(k){ if(p[k]!=null && p[k]!=="") o[k]=p[k]; });
-  function clean(it){ var r={}; ["n","s","c","u","l","e","r"].forEach(function(k){ if(it[k]!=null && it[k]!=="") r[k]=it[k]; }); return r; }
+  function clean(it){ var r={}; ["n","q","qu","s","c","u","l","e","r"].forEach(function(k){ if(it[k]!=null && it[k]!=="") r[k]=it[k]; }); return r; }
   if(isSingle(p)) o.item=clean(p.item);
   else { var ls=(p.layers||[]).map(function(Ly){ return Ly.map(clean); }), lr=[];
     ls.forEach(function(Ly){ var k=JSON.stringify(Ly), last=lr[lr.length-1]; if(last && last.k===k) last.x++; else lr.push({k:k,x:1,L:Ly}); });
@@ -649,7 +650,7 @@ function labelCanvas(p){
   g.font="600 84px 'IBM Plex Mono',monospace"; fitText(g,p.code,56,180,W-112);
   g.font="500 32px 'Be Vietnam Pro','Noto Sans KR',sans-serif"; fitText(g,(p.ship||"")+"  →  "+(p.dest||""),56,232,W-112);
   var tt=totals(p), yy=282;
-  if(isSingle(p)){ g.font="700 34px 'Noto Sans KR','Be Vietnam Pro',sans-serif"; fitText(g,p.item.n||p.item.v||"",56,yy,W-112); yy+=44; }
+  if(isSingle(p)){ g.font="700 34px 'Noto Sans KR','Be Vietnam Pro',sans-serif"; fitText(g,(p.item.n||p.item.v||"")+(specOf(p.item)?"  "+specOf(p.item):""),56,yy,W-112); yy+=44; }
   g.font="500 30px 'Be Vietnam Pro','Noto Sans KR',sans-serif";
   fitText(g,tt.l+" layers / tầng · "+tt.c+" ctn"+(tt.r?" (+1 loose: "+tt.r+" pcs)":"")+" · "+tt.u+" pcs"+(p.gross?" · "+p.gross+" kg":""),56,yy,W-112);
   if(typeof qrcode==="function"){
@@ -728,12 +729,12 @@ app.addEventListener("click",function(ev){
     case "layer": ui.flashLayer=(v==="rem"?"rem":+v); render(); break;
     case "close": if(!ui.busy) closeModal(); break;
     case "new":
-      ui.draftOrig=null; ui.draft={code:"",ship:ui.ship!=="all"?ui.ship:"",dest:"",size:"1100×1100",gross:"",height:"",status:"packing",note:"",item:blankItem(),total:"",per:""}; ui.err=""; ui.modal="edit"; render(); focusSoon("f-code"); break;
+      ui.draftOrig=null; ui.draft={code:"",ship:ui.ship!=="all"?ui.ship:"",dest:"",gross:"",height:"",status:"packing",note:"",item:blankItem(),total:"",per:""}; ui.err=""; ui.modal="edit"; render(); focusSoon("f-code"); break;
     case "edit": { var p=findP(ui.sel); if(!p) break; ui.draftOrig=p.code; ui.draft=clone(p); if(ui.draft.mode==="mixed" && !(ui.draft.layers||[]).length) ui.draft.layers=[[blankItem()]]; if(ui.draft.mode!=="mixed" && !ui.draft.item) ui.draft.item=blankItem(); ui.err=""; ui.modal="edit"; render(); break; }
     case "mode": {
       var d=ui.draft; if(!d) break;
       if(v==="mixed" && d.mode!=="mixed"){ var ls=(d.item&&(d.item.n||d.item.v)&&n0(d.total)>0)?clone(layersOf(d)):[[clone(withC(d.item||blankItem(),""))]]; d.mode="mixed"; d.layers=ls; }
-      else if(v==="single" && d.mode==="mixed"){ var ps=productsOf(d); var first=ps[0]||blankItem(); var mx=0; (d.layers||[]).forEach(function(Ly){ var c=0; Ly.forEach(function(x){ c+=n0(x.c); }); if(c>mx) mx=c; }); d.mode="single"; d.item={n:first.n||"",v:first.v||"",s:first.s||"",u:first.u||"",l:first.l||"",e:first.e||""}; d.total=ps.reduce(function(a,x){ return a+n0(x.c); },0)||""; d.per=mx||""; }
+      else if(v==="single" && d.mode==="mixed"){ var ps=productsOf(d); var first=ps[0]||blankItem(); var mx=0; (d.layers||[]).forEach(function(Ly){ var c=0; Ly.forEach(function(x){ c+=n0(x.c); }); if(c>mx) mx=c; }); d.mode="single"; d.item={n:first.n||"",q:first.q||"",qu:first.qu||"ml",s:first.s||"",u:first.u||"",l:first.l||"",e:first.e||""}; d.total=ps.reduce(function(a,x){ return a+n0(x.c); },0)||""; d.per=mx||""; }
       render(); break; }
     case "dup": { var p2=findP(ui.sel); if(!p2) break; ui.draftOrig=null; ui.draft=clone(p2); ui.draft.code=nextCode(p2.code); ui.draft.status="packing"; ui.err=""; ui.modal="edit"; render(); focusSoon("f-code"); break; }
     case "addItem": ui.draft.layers[+v].push(blankItem()); render(); break;
@@ -753,7 +754,7 @@ app.addEventListener("click",function(ev){
       var nx=clone(state); if(nx.example){ nx.pallets=[]; nx.example=false; }
       ui.pasteRes.pallets.forEach(function(np){
         var idx=-1; nx.pallets.forEach(function(p,i){ if(p.code===np.code) idx=i; });
-        if(idx>=0){ var old=nx.pallets[idx]; np.size=old.size; np.gross=old.gross; np.height=old.height; np.status=old.status; np.note=old.note; nx.pallets[idx]=np; }
+        if(idx>=0){ var old=nx.pallets[idx]; np.gross=old.gross; np.height=old.height; np.status=old.status; np.note=old.note; nx.pallets[idx]=np; }
         else nx.pallets.push(np);
       });
       var first=ui.pasteRes.pallets[0].code;
@@ -780,7 +781,7 @@ app.addEventListener("input",function(ev){
   var ik=el.getAttribute("data-ik");
   if(ik){
     var di=ui.draft.item; di[ik]=el.value;
-    if(ik==="n"){ var hit0=null; catalog().forEach(function(c){ if(c.n===el.value) hit0=c; }); if(hit0){ if(!di.s) di.s=hit0.s||""; if(!di.u) di.u=hit0.u||""; render(); } }
+    if(ik==="n"){ var hit0=null; catalog().forEach(function(c){ if(c.n===el.value) hit0=c; }); if(hit0){ if(!di.s) di.s=hit0.s||""; if(!di.u) di.u=hit0.u||""; if(!di.q && hit0.q){ di.q=hit0.q; di.qu=hit0.qu||"ml"; } render(); } }
     if(ik==="u"||ik==="r") render();
     return;
   }
@@ -788,7 +789,7 @@ app.addEventListener("input",function(ev){
   if(f){
     var it=ui.draft.layers[+el.getAttribute("data-li")][+el.getAttribute("data-ii")];
     it[f]=el.value;
-    if(f==="n"){ var hit=null; catalog().forEach(function(c){ if(c.n===el.value) hit=c; }); if(hit){ var changed=false; if(!it.v){ it.v=hit.v||""; changed=true; } if(!it.s){ it.s=hit.s||""; changed=true; } if(!it.u){ it.u=hit.u||""; changed=true; } if(changed) render(); } }
+    if(f==="n"){ var hit=null; catalog().forEach(function(c){ if(c.n===el.value) hit=c; }); if(hit){ var changed=false; if(!it.v){ it.v=hit.v||""; changed=true; } if(!it.s){ it.s=hit.s||""; changed=true; } if(!it.u){ it.u=hit.u||""; changed=true; } if(!it.q && hit.q){ it.q=hit.q; it.qu=hit.qu||"ml"; changed=true; } if(changed) render(); } }
   }
 });
 app.addEventListener("change",function(ev){ var el=ev.target; if(ui.draft && el.getAttribute("data-k")) ui.draft[el.getAttribute("data-k")]=el.value; });
@@ -809,13 +810,13 @@ function saveDraft(){
   d.gross = d.gross===""?"":n0(d.gross); d.height = d.height===""?"":n0(d.height);
   if(d.mode!=="mixed"){
     var it=d.item||{};
-    d.item={n:String(it.n||"").trim(),s:String(it.s||"").trim(),u:String(it.u||"").trim()===""?"":n0(it.u),l:String(it.l||"").trim(),e:String(it.e||"").trim()}; var rr1=Math.floor(n0(it.r)); if(rr1>0) d.item.r=rr1;
+    d.item={n:String(it.n||"").trim(),s:String(it.s||"").trim(),q:String(it.q==null?"":it.q).trim(),qu:it.qu==="g"?"g":"ml",u:String(it.u||"").trim()===""?"":n0(it.u),l:String(it.l||"").trim(),e:String(it.e||"").trim()}; var rr1=Math.floor(n0(it.r)); if(rr1>0) d.item.r=rr1; if(!d.item.q){ delete d.item.q; delete d.item.qu; }
     d.total=Math.floor(n0(d.total)); d.per=String(d.per||"").trim()===""?"":Math.floor(n0(d.per));
     if(!d.item.n || !(d.total>0)){ ui.err=L.needItem; render(); return; }
     delete d.mode; delete d.layers;
   } else {
   delete d.item; delete d.total; delete d.per;
-  d.layers = d.layers.map(function(Ly){ return Ly.filter(function(it){ return (it.n||it.v||it.s||"").trim(); }).map(function(it){ return {n:it.n.trim(),v:(it.v||"").trim(),s:(it.s||"").trim(),c:n0(it.c),u:it.u===""?"":n0(it.u),l:(it.l||"").trim(),e:(it.e||"").trim()}; }); });
+  d.layers = d.layers.map(function(Ly){ return Ly.filter(function(it){ return (it.n||it.v||it.s||"").trim(); }).map(function(it){ return {n:it.n.trim(),v:(it.v||"").trim(),s:(it.s||"").trim(),c:n0(it.c),u:it.u===""?"":n0(it.u),l:(it.l||"").trim(),e:(it.e||"").trim(),q:String(it.q==null?"":it.q).trim(),qu:it.qu==="g"?"g":"ml"}; }).map(function(it){ if(!it.q){ delete it.q; delete it.qu; } return it; }); });
   while(d.layers.length && !d.layers[d.layers.length-1].length) d.layers.pop();
   }
   var next=clone(state), orig=ui.draftOrig;
@@ -823,11 +824,11 @@ function saveDraft(){
   persist(next,function(){ ui.modal=null; ui.draft=null; ui.sel=d.code; location.hash=slug(d.code); });
 }
 function exportCSV(){
-  var L=T.ko, head=L.cols.concat(["총수량","층수","규격","총중량(kg)","높이(mm)","상태"]);
+  var L=T.ko, head=L.cols.concat(["총수량","층수","총중량(kg)","적재높이(mm)","상태"]);
   var rows=[head];
   state.pallets.filter(function(p){ return ui.ship==="all"||p.ship===ui.ship; }).forEach(function(p){
     var tt=totals(p), single=isSingle(p);
-    productsOf(p).forEach(function(it){ var rr=single?tt.r:0; rows.push([p.code,p.ship,p.dest,it.n,it.s,it.c,single?(p.per||""):"",it.u,it.l,it.e,rr||"",it.u?n0(it.c)*n0(it.u)+rr:"",tt.l,p.size,p.gross,p.height,L.st[p.status]||p.status]); });
+    productsOf(p).forEach(function(it){ var rr=single?tt.r:0; rows.push([p.code,p.ship,p.dest,it.n,it.s,it.c,single?(p.per||""):"",it.u,it.l,it.e,rr||"",it.q||"",it.q?(it.qu||"ml"):"",it.u?n0(it.c)*n0(it.u)+rr:"",tt.l,p.gross,p.height,L.st[p.status]||p.status]); });
   });
   var csv="﻿"+rows.map(function(r){ return r.map(function(x){ x=String(x==null?"":x); return /[",\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x; }).join(","); }).join("\r\n");
   var name="packing_list_"+(ui.ship==="all"?"all":slug(ui.ship))+".csv";
